@@ -1,116 +1,69 @@
 <x-app-layout>
-    <style>
-        .table-container {
-            max-height: 400px; /* Set the height for scroll */
-            overflow-y: auto; /* Enable vertical scrolling */
-            border: 1px solid #ccc; /* Add a border for the container */
-            padding: 0; /* Remove extra padding */
-            margin: 0; /* Remove external margins */
-            border-radius: 8px; /* Optional for rounded look */
-            background-color: #f9f9f9; /* Optional */
-        }
-
-        .comment-management-table {
-            width: 100%;
-            border-collapse: collapse; /* Prevent spacing between cells and borders */
-            margin: 0; /* Remove margin on table */
-        }
-
-        .comment-management-table th,
-        .comment-management-table td {
-            border: 1px solid #ccc; /* Table cell borders */
-            padding: 8px; /* Padding inside cells */
-            text-align: left; /* Align text to the left */
-        }
-
-        .comment-management-table th {
-            background-color: #f4f4f4; /* Header background color */
-            position: sticky; /* Sticky header to stay visible during scrolling */
-            top: 0; /* Position at the top */
-            z-index: 2; /* Ensure it stays above other content */
-        }
-
-        .actions-column {
-            width: 230px;
-        }
-
-        .action-button {
-            display: inline-block;
-            padding: 6px 12px;
-            margin-right: 4px;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .view-button {
-            background-color: #007bff;
-        }
-
-        .edit-button {
-            background-color: #ffc107;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-        .action-button:hover {
-            opacity: 0.9;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-2xl font-bold mb-6">Comments Management</h2>
-                    <a href="{{ route('comments.create') }}"
-                       style="background-color: #000; color: #fff; border: 1px solid #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; display: inline-block; margin-bottom: 16px;">
-                        Add New Comment
-                    </a>
-                    <div class="table-container">
-                        <table class="comment-management-table">
-                            <thead>
-                                <tr>
-                                    <th>Document</th>
-                                    <th>User</th>
-                                    <th>Rating</th>
-                                    <th>Content</th>
-                                    <th class="actions-column">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($comments as $comment)
-                                    <tr>
-                                        <td>{{ $comment->document->name }}</td>
-                                        <td>{{ $comment->user->name }}</td>
-                                        <td>{{ $comment->rating ?? 'N/A' }}</td>
-                                        <td>{{ Str::limit($comment->content, 50) }}</td>
-                                        <td class="actions-column">
-                                            <a href="{{ route('comments.show', $comment->id) }}" class="action-button view-button">
-                                                View
-                                            </a>
-                                            <a href="{{ route('comments.edit', $comment->id) }}" class="action-button edit-button">
-                                                Edit
-                                            </a>
-                                            <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="action-button delete-button" onclick="return confirm('Are you sure?')">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <x-container class="py-8">
+        <!-- Page Header with Action Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <x-page-header title="Comments Management" description="Manage document comments and ratings">
+            </x-page-header>
+            <x-button type="primary" onclick="window.location.href='{{ route('comments.create') }}'">
+                <i class="fas fa-plus mr-2"></i>Add Comment
+            </x-button>
         </div>
-    </div>
+
+        <!-- Data Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
+            @if($comments->count() > 0)
+                <x-table :headers="['Document', 'User', 'Rating', 'Content', 'Actions']">
+                    @foreach($comments as $comment)
+                        <x-table-row>
+                            <x-table-cell>
+                                <p class="font-semibold text-slate-900 dark:text-white">{{ $comment->document->name }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400">{{ $comment->user->name }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <div class="flex gap-1">
+                                    @if($comment->rating)
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="text-lg {{ $i <= $comment->rating ? 'text-yellow-400' : 'text-slate-300' }}">★</span>
+                                        @endfor
+                                    @else
+                                        <p class="text-slate-500 text-sm">No rating</p>
+                                    @endif
+                                </div>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">{{ Str::limit($comment->content, 50) }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <div class="flex gap-2">
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('comments.show', $comment->id) }}'">
+                                        <i class="fas fa-eye mr-1"></i>View
+                                    </x-button>
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('comments.edit', $comment->id) }}'">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </x-button>
+                                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center justify-center text-xs font-medium rounded-lg px-3 py-1.5 bg-danger-600 hover:bg-danger-700 text-white transition-colors" onclick="return confirm('Confirm delete?')">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </x-table-cell>
+                        </x-table-row>
+                    @endforeach
+                </x-table>
+            @else
+                <div class="p-12 text-center">
+                    <div class="text-slate-400 dark:text-slate-500 mb-4">
+                        <i class="fas fa-comments text-4xl"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-medium">No comments found</p>
+                    <p class="text-slate-500 dark:text-slate-500 text-sm mt-2">Start by adding your first comment.</p>
+                </div>
+            @endif
+        </div>
+    </x-container>
 </x-app-layout>

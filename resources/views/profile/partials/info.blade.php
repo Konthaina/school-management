@@ -1,92 +1,73 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Profile Information') }}
+<section class="space-y-6">
+    <header class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="fas fa-user-circle text-indigo-600 dark:text-indigo-400"></i>
+            Your Profile Summary
         </h2>
-
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information.") }}
-        </p>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">View your current profile information</p>
     </header>
 
-    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
-        @csrf
-        @method('patch')
-
+    <!-- Profile Information Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Full Name</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">{{ $user->name }}</p>
         </div>
 
         <!-- Email -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Email</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2 break-all text-sm">{{ $user->email }}</p>
         </div>
 
-        <!-- Phone Number -->
-        <div>
-            <x-input-label for="phone_number" :value="__('Phone Number')" />
-            <x-text-input id="phone_number" name="phone_number" type="text" class="mt-1 block w-full" :value="old('phone_number', $profile->phone_number)" autocomplete="tel" />
-            <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
-        </div>
-
-        <!-- Address -->
-        <div>
-            <x-input-label for="address" :value="__('Address')" />
-            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address', $profile->address)" autocomplete="address" />
-            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+        <!-- Phone -->
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Phone</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">{{ $profile->phone_number ?? 'Not set' }}</p>
         </div>
 
         <!-- Date of Birth -->
-        <div>
-            <x-input-label for="date_of_birth" :value="__('Date of Birth')" />
-            <x-text-input id="date_of_birth" name="date_of_birth" type="date" class="mt-1 block w-full" :value="old('date_of_birth', $profile->date_of_birth)" autocomplete="bday" />
-            <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Date of Birth</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">
+                @if($profile->date_of_birth)
+                    {{ \Carbon\Carbon::parse($profile->date_of_birth)->format('M d, Y') }}
+                @else
+                    Not set
+                @endif
+            </p>
+        </div>
+
+        <!-- Address -->
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Address</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">{{ $profile->address ?? 'Not set' }}</p>
         </div>
 
         <!-- Institution -->
-        <div>
-            <x-input-label for="institution" :value="__('Institution')" />
-            <x-text-input id="institution" name="institution" type="text" class="mt-1 block w-full" :value="old('institution', $profile->institution)" autocomplete="organization" />
-            <x-input-error class="mt-2" :messages="$errors->get('institution')" />
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Institution/Organization</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">{{ $profile->institution ?? 'Not set' }}</p>
         </div>
 
         <!-- Bio -->
-        <div>
-            <x-input-label for="bio" :value="__('Bio')" />
-            <textarea id="bio" name="bio" class="mt-1 block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:border-indigo-500 dark:focus:border-indigo-600 sm:text-sm">
-                {{ old('bio', $profile->bio) }}
-            </textarea>
-            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
+        @if($profile->bio)
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 sm:col-span-2">
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Bio</p>
+            <p class="text-gray-900 dark:text-white font-semibold mt-2">{{ $profile->bio }}</p>
         </div>
+        @endif
+    </div>
 
-        <!-- Profile Picture -->
-        <div>
-            <x-input-label for="profile_picture" :value="__('Profile Picture')" />
-            @if ($profile->profile_picture)
-                <img src="{{ asset('storage/' . $profile->profile_picture) }}" alt="Profile Picture" class="mt-2 w-20 h-20 rounded-full">
-            @endif
-            <x-text-input id="profile_picture" name="profile_picture" type="file" class="mt-2 block w-full" />
-            <x-input-error class="mt-2" :messages="$errors->get('profile_picture')" />
+    <!-- Info Card -->
+    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div class="flex gap-3">
+            <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 text-lg mt-0.5 flex-shrink-0"></i>
+            <div>
+                <h3 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">Profile Information</h3>
+                <p class="text-blue-800 dark:text-blue-300 text-xs mt-1">View your current profile information above. Use the form below to update any of your details.</p>
+            </div>
         </div>
-
-        <!-- Save Button -->
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
-    </form>
+    </div>
 </section>

@@ -1,99 +1,68 @@
 <x-app-layout>
-    <style>
-        /* Reuse the table and button styles */
-        .document-management-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .document-management-table th, .document-management-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .document-management-table th {
-            background-color: #f4f4f4;
-        }
-
-        .actions-column {
-            width: 230px;
-        }
-
-        .action-button {
-            display: inline-block;
-            padding: 6px 12px;
-            margin-right: 4px;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .view-button {
-            background-color: #007bff;
-        }
-
-        .edit-button {
-            background-color: #ffc107;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-        .action-button:hover {
-            opacity: 0.9;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-2xl font-bold mb-6">Your Documents</h2>
-                    <a href="{{ route('lecturer.documents.create') }}"
-                       style="background-color: #000; color: #fff; border: 1px solid #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; display: inline-block; margin-bottom: 16px;">
-                        Add New Document
-                    </a>
-                    <table class="document-management-table">
-                        <thead>
-                            <tr>
-                                <th>Document Name</th>
-                                <th>Publication Year</th>
-                                <th>Field</th>
-                                <th class="actions-column">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($documents as $document)
-                                <tr>
-                                    <td>{{ $document->name }}</td>
-                                    <td>{{ $document->publication_year }}</td>
-                                    <td>{{ $document->field }}</td>
-                                    <td class="actions-column">
-                                        <a href="{{ route('lecturer.documents.show', $document->id) }}" class="action-button view-button">
-                                            View
-                                        </a>
-                                        <a href="{{ route('lecturer.documents.edit', $document->id) }}" class="action-button edit-button">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('lecturer.documents.destroy', $document->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="action-button delete-button" onclick="return confirm('Are you sure?')">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <x-container class="py-8">
+        <!-- Page Header with Action Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <x-page-header title="My Documents" description="Manage your uploaded documents">
+            </x-page-header>
+            <x-button type="primary" onclick="window.location.href='{{ route('lecturer.documents.create') }}'">
+                <i class="fas fa-plus mr-2"></i>Add Document
+            </x-button>
         </div>
-    </div>
+
+        <!-- Data Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
+            @if($documents->count() > 0)
+                <x-table :headers="['Document Name', 'Publication Year', 'Field', 'Author', 'Actions']">
+                    @foreach($documents as $document)
+                        <x-table-row>
+                            <x-table-cell>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-file-pdf text-primary-600 dark:text-primary-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-900 dark:text-white">{{ $document->name }}</p>
+                                    </div>
+                                </div>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400">{{ $document->publication_year ?? 'N/A' }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <x-badge type="primary">{{ $document->field ?? 'Unspecified' }}</x-badge>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">{{ $document->author ?? 'N/A' }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <div class="flex gap-2">
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('lecturer.documents.show', $document->id) }}'">
+                                        <i class="fas fa-eye mr-1"></i>View
+                                    </x-button>
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('lecturer.documents.edit', $document->id) }}'">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </x-button>
+                                    <form action="{{ route('lecturer.documents.destroy', $document->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center justify-center text-xs font-medium rounded-lg px-3 py-1.5 bg-danger-600 hover:bg-danger-700 text-white transition-colors" onclick="return confirm('Confirm delete?')">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </x-table-cell>
+                        </x-table-row>
+                    @endforeach
+                </x-table>
+            @else
+                <div class="p-12 text-center">
+                    <div class="text-slate-400 dark:text-slate-500 mb-4">
+                        <i class="fas fa-inbox text-4xl"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-medium">No documents found</p>
+                    <p class="text-slate-500 dark:text-slate-500 text-sm mt-2">Start by uploading your first document.</p>
+                </div>
+            @endif
+        </div>
+    </x-container>
 </x-app-layout>

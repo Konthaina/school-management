@@ -1,3 +1,184 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-200;
+    }
+
+    /* Smooth transitions for theme changes */
+    * {
+        @apply transition-colors duration-200;
+    }
+
+    /* Links */
+    a {
+        @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors;
+    }
+
+    /* Forms */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+        @apply transition-all duration-200;
+    }
+}
+
+/* Custom component styles */
+@layer components {
+    /* Cards */
+    .card {
+        @apply bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden;
+    }
+
+    /* Buttons - Base styles handled in button component */
+    .btn {
+        @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Form inputs */
+    .form-input {
+        @apply w-full px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    }
+
+    /* Tables */
+    .table-container {
+        @apply overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700;
+    }
+
+    .table-header {
+        @apply bg-slate-50 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600;
+    }
+
+    .table-row {
+        @apply border-0 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors;
+    }
+
+    .table-cell {
+        @apply px-6 py-4 text-sm text-slate-700 dark:text-slate-300;
+    }
+
+    /* Badges */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    /* Page headers */
+    .page-header {
+        @apply mb-8;
+    }
+
+    .page-title {
+        @apply text-3xl font-bold text-slate-900 dark:text-white;
+    }
+
+    .page-subtitle {
+        @apply mt-2 text-slate-600 dark:text-slate-400;
+    }
+}
+
+/* Utilities */
+@layer utilities {
+    /* Responsive padding */
+    .px-responsive {
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+
+    .py-responsive {
+        @apply py-4 sm:py-6 lg:py-8;
+    }
+
+    /* Text truncation */
+    .truncate-1 {
+        @apply truncate;
+    }
+
+    .truncate-2 {
+        @apply line-clamp-2;
+    }
+
+    .truncate-3 {
+        @apply line-clamp-3;
+    }
+
+    /* Shadows */
+    .shadow-subtle {
+        @apply shadow-sm;
+    }
+
+    .shadow-prominent {
+        @apply shadow-lg;
+    }
+
+    /* Borders */
+    .border-subtle {
+        @apply border-slate-200 dark:border-slate-700;
+    }
+
+    /* Text colors */
+    .text-muted {
+        @apply text-slate-600 dark:text-slate-400;
+    }
+
+    .text-subtle {
+        @apply text-slate-500 dark:text-slate-500;
+    }
+
+    /* Focus ring */
+    .focus-ring {
+        @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900;
+    }
+
+    /* Animations */
+    @keyframes slide-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+    }
+
+    /* Accessibility - Skip link */
+    .skip-link {
+        @apply absolute top-0 left-0 px-4 py-2 bg-primary-600 text-white -translate-y-full focus:translate-y-0 transition-transform;
+    }
+
+    /* Loading spinner */
+    .spinner {
+        @apply inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent;
+    }
+
+    /* Badge variants using Tailwind */
+    .badge-primary {
+        @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200;
+    }
+
+    .badge-success {
+        @apply bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200;
+    }
+
+    .badge-warning {
+        @apply bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200;
+    }
+
+    .badge-danger {
+        @apply bg-danger-100 text-danger-800 dark:bg-danger-900 dark:text-danger-200;
+    }
+}

@@ -1,146 +1,77 @@
 <x-app-layout>
-    <style>
-        /* Custom styles for the table */
-        .profile-management-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .profile-management-table th, .profile-management-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .profile-management-table th {
-            background-color: #f4f4f4;
-        }
-
-        .actions-column {
-            width: 230px;
-        }
-
-        .profile-picture {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .action-button {
-            display: inline-block;
-            padding: 6px 12px;
-            margin-right: 4px;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .view-button {
-            background-color: #007bff;
-        }
-
-        .edit-button {
-            background-color: #ffc107;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-        .action-button:hover {
-            opacity: 0.9;
-        }
-
-        .pro-box {
-            width: 60px;
-            height: auto;
-            align-items: center;
-        }
-
-        .create-profile-btn {
-            background-color: #000;
-            color: #fff;
-            border: 1px solid #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 16px;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-2xl font-bold mb-6">Manage User Profiles</h2>
-
-                    <a href="{{ route('admin.profiles.create') }}" class="create-profile-btn">
-                        Create Profile
-                    </a>
-                    @if(auth()->user()->role_id === 5)
-                        <a href="{{ route('admin.profiles.create') }}" class="create-profile-btn">
-                            Create Profile
-                        </a>
-                    @endif
-
-                    <table class="profile-management-table">
-                        <thead>
-                            <tr>
-                                <th class="pro-box">Profile</th>
-                                <th>ID</th>
-                                <th>User</th>
-                                <th>Phone Number</th>
-                                <th>Address</th>
-                                <th>Date of Birth</th>
-                                <th class="actions-column">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($profiles as $profile)
-                                <tr>
-                                    <td class="pro-box">
-                                        <img src="{{ $profile->profile_picture ? asset('storage/' . $profile->profile_picture) : asset('images/default-profile.png') }}"
-                                             alt="Profile Picture"
-                                             class="profile-picture">
-                                    </td>
-                                    <td>{{ $profile->id }}</td>
-                                    <td>{{ $profile->user->name }}</td>
-                                    <td>{{ $profile->phone_number }}</td>
-                                    <td>{{ $profile->address }}</td>
-                                    <td>{{ $profile->date_of_birth }}</td>
-                                    <td class="actions-column">
-                                        <!-- 'View' is available for everyone -->
-                                        <a href="{{ route('admin.profiles.show', $profile->id) }}" class="action-button view-button">
-                                            View
-                                        </a>
-
-                                        <!-- Admin can edit anyone except Super Admin -->
-                                        @if(auth()->user()->role_id === 5 ||
-                                            (auth()->user()->role_id === 4 && $profile->user->role_id !== 5))
-                                            <a href="{{ route('admin.profiles.edit', $profile->id) }}" class="action-button edit-button">
-                                                Edit
-                                            </a>
-                                            <form action="{{ route('admin.profiles.destroy', $profile->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="action-button delete-button" onclick="return confirm('Are you sure?')">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
+    <x-container class="py-8">
+        <!-- Page Header with Action Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <x-page-header title="User Profiles" description="Manage user profiles and information">
+            </x-page-header>
+            @if(auth()->user()->role_id === 5 || auth()->user()->role->name === 'Super Admin')
+                <x-button type="primary" onclick="window.location.href='{{ route('admin.profiles.create') }}'">
+                    <i class="fas fa-plus mr-2"></i>Create Profile
+                </x-button>
+            @endif
         </div>
-    </div>
+
+        <!-- Data Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
+            @if($profiles->count() > 0)
+                <x-table :headers="['Profile', 'User', 'Phone', 'Address', 'DOB', 'Actions']">
+                    @foreach($profiles as $profile)
+                        <x-table-row>
+                            <x-table-cell>
+                                <div class="flex items-center gap-3">
+                                    @if($profile->profile_picture)
+                                        <img src="{{ asset('storage/' . $profile->profile_picture) }}" alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                                    @else
+                                        <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-user text-primary-600 dark:text-primary-400 text-sm"></i>
+                                        </div>
+                                    @endif
+                                    <span class="font-semibold text-slate-900 dark:text-white text-sm">Profile #{{ $profile->id }}</span>
+                                </div>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="font-semibold text-slate-900 dark:text-white">{{ $profile->user->name }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">{{ $profile->phone_number ?? 'N/A' }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">{{ $profile->address ?? 'N/A' }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">{{ $profile->date_of_birth ?? 'N/A' }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <div class="flex gap-2">
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('admin.profiles.show', $profile->id) }}'">
+                                        <i class="fas fa-eye mr-1"></i>View
+                                    </x-button>
+                                    @if(auth()->user()->role_id === 5 || (auth()->user()->role_id === 4 && $profile->user->role_id !== 5))
+                                        <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('admin.profiles.edit', $profile->id) }}'">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </x-button>
+                                        <form action="{{ route('admin.profiles.destroy', $profile->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center justify-center text-xs font-medium rounded-lg px-3 py-1.5 bg-danger-600 hover:bg-danger-700 text-white transition-colors" onclick="return confirm('Confirm delete?')">
+                                                <i class="fas fa-trash mr-1"></i>Delete
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </x-table-cell>
+                        </x-table-row>
+                    @endforeach
+                </x-table>
+            @else
+                <div class="p-12 text-center">
+                    <div class="text-slate-400 dark:text-slate-500 mb-4">
+                        <i class="fas fa-user-circle text-4xl"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-medium">No profiles found</p>
+                    <p class="text-slate-500 dark:text-slate-500 text-sm mt-2">Start by creating your first profile.</p>
+                </div>
+            @endif
+        </div>
+    </x-container>
 </x-app-layout>

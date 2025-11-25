@@ -30,46 +30,59 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(Request $request): RedirectResponse
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'phone_number' => 'nullable|string|max:15',
-        'address' => 'nullable|string|max:255',
-        'profile_picture' => 'nullable|image|max:2048',
-        'date_of_birth' => 'nullable|date',
-        'institution' => 'nullable|string|max:255',
-        'bio' => 'nullable|string|max:500',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $request->user()->id,
+            'phone_number' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'profile_picture' => 'nullable|image|max:2048',
+            'date_of_birth' => 'nullable|date',
+            'institution' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:500',
+        ]);
 
-    $user = $request->user();
-    $user->fill([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-    ]);
+        $user = $request->user();
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
 
-    if ($user->isDirty('email')) {
-        $user->email_verified_at = null;
-    }
-    $user->save();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+        $user->save();
 
-    $profile = $user->profile;
+        $profile = $user->profile;
 
-    // Check if a new profile picture is being uploaded
-    if ($request->hasFile('profile_picture')) {
-        // Delete the old profile picture if it exists
-        if ($profile->profile_picture && Storage::disk('public')->exists($profile->profile_picture)) {
-            Storage::disk('public')->delete($profile->profile_picture);
+        // Check if a new profile picture is being uploaded
+        if ($request->hasFile('profile_picture')) {
+            // Delete the old profile picture if it exists
+            if ($profile->profile_picture && Storage::disk('public')->exists($profile->profile_picture)) {
+                Storage::disk('public')->delete($profile->profile_picture);
+            }
+
+            // Store the new profile picture and update the path
+            $validated['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
         }
 
-        // Store the new profile picture and update the path
-        $validated['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
+        // Only update profile with allowed fields
+        $profileData = [
+            'phone_number' => $validated['phone_number'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'date_of_birth' => $validated['date_of_birth'] ?? null,
+            'institution' => $validated['institution'] ?? null,
+            'bio' => $validated['bio'] ?? null,
+        ];
+
+        if (isset($validated['profile_picture'])) {
+            $profileData['profile_picture'] = $validated['profile_picture'];
+        }
+
+        $profile->update($profileData);
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-
-    $profile->update($validated);
-
-    return Redirect::route('profile.edit')->with('status', 'Profile updated successfully.');
-}
 
 
     /**

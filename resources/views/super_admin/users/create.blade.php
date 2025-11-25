@@ -1,73 +1,112 @@
 <x-app-layout>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Add New User" description="Create a new system user account">
+        </x-page-header>
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn-submit {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            background-color: #218838;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="form-container">
-            <h2 class="text-xl font-bold mb-4">Add New User</h2>
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
             <form method="POST" action="{{ route('users.store') }}">
                 @csrf
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+
+                <div class="space-y-6">
+                    <!-- Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Full Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name') }}"
+                            placeholder="Enter user's full name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-primary-600"></i>Email Address
+                        </label>
+                        <x-input 
+                            id="email"
+                            name="email"
+                            type="email"
+                            value="{{ old('email') }}"
+                            placeholder="user@example.com"
+                            required
+                        />
+                        @error('email')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-primary-600"></i>Password
+                        </label>
+                        <x-input 
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter a secure password"
+                            required
+                        />
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Minimum 8 characters recommended
+                        </p>
+                        @error('password')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Role Field -->
+                    <div>
+                        <label for="role_id" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user-tag mr-2 text-primary-600"></i>User Role
+                        </label>
+                        <x-select 
+                            id="role_id"
+                            name="role_id"
+                            required
+                        >
+                            <option value="">Select Role</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        @error('role_id')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-save mr-2"></i>Create User
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="role_id">Role</label>
-                    <select id="role_id" name="role_id" required>
-                        <option value="">Select Role</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">Create User</button>
             </form>
-        </div>
-    </div>
+        </x-card>
+    </x-container>
 </x-app-layout>

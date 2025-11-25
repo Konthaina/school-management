@@ -1,45 +1,67 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Students') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <a href="{{ route('lecturer.users.create') }}" class="btn btn-primary mb-4">Add Student</a>
-                    <table class="table-auto w-full">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="px-4 py-2">#</th>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($students as $student)
-                                <tr>
-                                    <td class="border px-4 py-2">{{ $loop->iteration }}</td>
-                                    <td class="border px-4 py-2">{{ $student->name }}</td>
-                                    <td class="border px-4 py-2">{{ $student->email }}</td>
-                                    <td class="border px-4 py-2">
-                                        <a href="{{ route('lecturer.users.show', $student->id) }}" class="text-blue-500">View</a> |
-                                        <a href="{{ route('lecturer.users.edit', $student->id) }}" class="text-green-500">Edit</a> |
-                                        <form action="{{ route('lecturer.users.destroy', $student->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500" onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <x-container class="py-8">
+        <!-- Page Header with Action Button -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <x-page-header title="Students" description="Manage student accounts">
+            </x-page-header>
+            <x-button type="primary" onclick="window.location.href='{{ route('lecturer.users.create') }}'">
+                <i class="fas fa-plus mr-2"></i>Add Student
+            </x-button>
         </div>
-    </div>
+
+        <!-- Data Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
+            @if($students->count() > 0)
+                <x-table :headers="['Name', 'Email', 'Member Since', 'Actions']">
+                    @foreach($students as $student)
+                        <x-table-row>
+                            <x-table-cell>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-primary-600 dark:text-primary-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-900 dark:text-white">{{ $student->name }}</p>
+                                    </div>
+                                </div>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400">{{ $student->email }}</p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">
+                                    <i class="fas fa-calendar text-slate-400 mr-2"></i>{{ $student->created_at->format('M d, Y') }}
+                                </p>
+                            </x-table-cell>
+                            <x-table-cell>
+                                <div class="flex gap-2">
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('lecturer.users.show', $student->id) }}'">
+                                        <i class="fas fa-eye mr-1"></i>View
+                                    </x-button>
+                                    <x-button type="secondary" size="xs" onclick="window.location.href='{{ route('lecturer.users.edit', $student->id) }}'">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </x-button>
+                                    <form action="{{ route('lecturer.users.destroy', $student->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center justify-center text-xs font-medium rounded-lg px-3 py-1.5 bg-danger-600 hover:bg-danger-700 text-white transition-colors" onclick="return confirm('Confirm delete?')">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </x-table-cell>
+                        </x-table-row>
+                    @endforeach
+                </x-table>
+            @else
+                <div class="p-12 text-center">
+                    <div class="text-slate-400 dark:text-slate-500 mb-4">
+                        <i class="fas fa-inbox text-4xl"></i>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 font-medium">No students found</p>
+                    <p class="text-slate-500 dark:text-slate-500 text-sm mt-2">Start by adding your first student.</p>
+                </div>
+            @endif
+        </div>
+    </x-container>
 </x-app-layout>

@@ -1,92 +1,111 @@
 <x-app-layout>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Edit User" description="{{ $user->name }}">
+        </x-page-header>
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn-submit {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            background-color: #218838;
-        }
-        .btn-back {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="form-container">
-            <h2 class="text-xl font-bold mb-4">Edit User</h2>
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
             <form method="POST" action="{{ route('users.update', $user->id) }}">
                 @csrf
                 @method('PUT')
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password <small>(Leave blank to keep current password)</small></label>
-                    <input type="password" id="password" name="password">
-                </div>
-                <div class="form-group">
-                    <label for="role_id">Role</label>
-                    <select id="role_id" name="role_id" required>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}" {{ $role->id == $user->role_id ? 'selected' : '' }}>
-                                {{ $role->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="button-container">
-                    <a href="{{ route('users.index') }}" class="btn-back">Back to Users</a>
-                <button type="submit" class="btn-submit">Update User</button>
+
+                <div class="space-y-6">
+                    <!-- Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Full Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name', $user->name) }}"
+                            placeholder="Enter user's full name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-primary-600"></i>Email Address
+                        </label>
+                        <x-input 
+                            id="email"
+                            name="email"
+                            type="email"
+                            value="{{ old('email', $user->email) }}"
+                            placeholder="user@example.com"
+                            required
+                        />
+                        @error('email')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-primary-600"></i>Password
+                        </label>
+                        <x-input 
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Leave blank to keep current password"
+                        />
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Leave empty to keep the current password
+                        </p>
+                        @error('password')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Role Field -->
+                    <div>
+                        <label for="role_id" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user-tag mr-2 text-primary-600"></i>User Role
+                        </label>
+                        <x-select 
+                            id="role_id"
+                            name="role_id"
+                            required
+                        >
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}" {{ $role->id == $user->role_id ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        @error('role_id')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-save mr-2"></i>Update User
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
+                    </div>
                 </div>
             </form>
-        </div>
-    </div>
+        </x-card>
+    </x-container>
 </x-app-layout>

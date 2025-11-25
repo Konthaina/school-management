@@ -1,335 +1,175 @@
 <x-app-layout>
-    <style>
-        /* General Table Styles */
-        .document-detail-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
+    <x-container class="py-8">
+        <!-- Header with Back Button -->
+        <div class="flex items-center gap-4 mb-8">
+            <x-button type="secondary" size="sm" onclick="window.location.href='{{ route('documents.index') }}'">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Documents
+            </x-button>
+        </div>
 
-        .document-detail-table th, .document-detail-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
+        <!-- Page Title -->
+        <x-page-header title="Document Details" description="{{ $document->name }}">
+        </x-page-header>
 
-        .document-detail-table th {
-            background-color: #f4f4f4;
-        }
-
-        /* Scrollable Box */
-        .scroll-box {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-        }
-
-        /* Form and Button Styles */
-        .form-control {
-            border-radius: 10px;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-        }
-
-        /* Comments Section */
-        .comment-box {
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-
-        .comments-section {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #fff;
-            margin-bottom: 20px;
-        }
-
-        .comment-item {
-            display: flex;
-            align-items: flex-start;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-
-        .comment-item:last-child {
-            border-bottom: none;
-        }
-
-        .comment-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .comment-content {
-            flex: 1;
-        }
-
-        .star-rating {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .star-rating .star {
-            font-size: 24px;
-            cursor: pointer;
-            color: #ddd;
-        }
-
-        .star-rating .star.selected {
-            color: #ffd700; /* Gold color for selected stars */
-        }
-
-        .star {
-            color: #ffd700;
-        }
-        .unsupported-file-message{
-            color: red;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .document-detail-table{
-            display: flex;
-            justify-content: space-between;
-        }
-        .profile{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .profile img{
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        .btn-cancel {
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .btn-cancel:hover {
-            background-color: #c82333;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <!-- Document Details -->
-                    <div class="profile">
-                        <h2 class="text-2xl font-bold mb-4">{{ $document->name }}</h2>
-                        <img
-                        src="{{ $document->user->profile && $document->user->profile->profile_picture
-                        ? asset('storage/' . $document->user->profile->profile_picture)
-                        : asset('storage/default-profile.png') }}"
-                        alt="Profile Picture"
-                        >
-                    </div>
-
-
-                    <div class="document-detail-table">
-                        <div class="info">
-                            <p><strong>Publication Year:</strong> {{ $document->publication_year }}</p>
-                            <p><strong>Field:</strong> {{ $document->field }}</p>
-                            <p><strong>Author:</strong> {{ $document->author }}</p>
+        <!-- Document Details Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Main Info Card -->
+            <x-card class="lg:col-span-2">
+                <div class="space-y-6">
+                    <!-- Document Header -->
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-lg bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-pdf text-2xl text-primary-600 dark:text-primary-400"></i>
                         </div>
-                        <div class="details">
-                            <p><strong>Post Date:</strong> {{ $document->created_at->format('Y-m-d') }}</p>
-                            <p><strong>Genre:</strong> {{ $document->genre}}</p>
-                            <p><strong>Keyword:</strong> {{ $document->keywords }}</p>
-                        </div>
-                    </div>
-                    <!-- Check and display the content based on file type -->
-                    @php
-                        $fileExtension = pathinfo($document->file_path, PATHINFO_EXTENSION);
-                    @endphp
-
-                    @if($fileExtension == 'pdf')
-                        <!-- PDF Button to View Document -->
-                        <a href="{{ asset('storage/' . $document->file_path) }}" class="btn btn-primary mb-3" target="_blank">
-                            View PDF Document
-                        </a>
-                    @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-                        <!-- Image Display -->
-                        <img src="{{ asset('storage/' . $document->file_path) }}" class="img-fluid mb-3" alt="Document Image">
-                    @elseif($fileExtension == 'txt')
-                        <!-- Text File Display -->
-                        <div class="scroll-box mb-3">
-                            <pre>{{ file_get_contents(storage_path('app/public/' . $document->file_path)) }}</pre>
-                        </div>
-                    @else
-                        <!-- Unsupported File Message -->
-                        <p class="unsupported-file-message">File format not supported for viewing.</p>
-                    @endif
-                    <!-- Download Button -->
-                    <a href="{{ route('document.download', $document->id) }}" class="btn btn-primary mb-3">
-                        Download Document
-                    </a>
-
-                    <!-- Comments Section -->
-                    <div class="mt-5">
-                        <h4>Comments</h4>
-                        <div class="comments-section">
-                            @foreach($document->comments as $comment)
-                                <div class="comment-item">
-                                    <!-- Profile Picture -->
-                                    <img
-                                        src="{{ $comment->user->profile && $comment->user->profile->profile_picture
-                                        ? asset('storage/' . $comment->user->profile->profile_picture)
-                                        : asset('storage/default-profile.png') }}"
-                                        alt="Profile Picture"
-                                    >
-
-                                    <!-- Comment Content -->
-                                    <div class="comment-content">
-                                        <p><strong>{{ $comment->user->name }}</strong>
-                                           <span style="color: #888; font-size: 14px;">{{ $comment->created_at->diffForHumans() }}</span>
-                                        </p>
-                                        <p>{{ $comment->content }}</p>
-                                        <div class="star-rating">
-                                            @if ($comment->rating == 1)
-                                                <span class="star selected">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                            @elseif ($comment->rating == 2)
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                            @elseif ($comment->rating == 3)
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                            @elseif ($comment->rating == 4)
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star">★</span>
-                                            @elseif ($comment->rating == 5)
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                                <span class="star selected">★</span>
-                                            @else
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                                <span class="star">★</span>
-                                            @endif
-                                        </div>
-
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $document->name }}</h3>
+                            <p class="text-slate-600 dark:text-slate-400 mt-1">Document ID: <span class="font-mono">#{{ $document->id }}</span></p>
                         </div>
                     </div>
 
-                    <!-- Comments and Evaluation Form -->
-                    <div class="comment-box">
-                        <h4>Leave a Comment and Rate the Document</h4>
-                        @auth
-                            <form action="{{ route('documents.storeFeedback', $document->id) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="document_id" value="{{ $document->id }}" />
-                                <input type="hidden" id="rating-input" name="rating" value="0" />
+                    <!-- Divider -->
+                    <div class="border-t border-slate-200 dark:border-slate-700"></div>
 
-                                <!-- Comment Section -->
-                                <div class="form-group">
-                                    <textarea name="content" class="form-control" placeholder="Add a comment..." required></textarea>
-                                </div>
+                    <!-- Document Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Publication Year -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Publication Year</label>
+                            <p class="mt-2 text-lg text-slate-900 dark:text-white">{{ $document->publication_year ?? 'N/A' }}</p>
+                        </div>
 
-                                <!-- Star Rating Section -->
-                                <div class="star-rating" id="star-rating">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <span class="star" data-value="{{ $i }}">★</span>
-                                    @endfor
-                                </div>
-                                <!-- Submit Button -->
-                                <a href="{{ route('super_admin.dashboard') }}" class="btn-cancel">Back</a>
-                                <button type="submit" class="btn btn-success mt-3">Submit Feedback</button>
-                            </form>
-                        @else
-                            <p><a href="{{ route('login') }}">Login</a> to leave a comment and rating.</p>
-                        @endauth
+                        <!-- Author -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Author</label>
+                            <p class="mt-2 text-lg text-slate-900 dark:text-white">{{ $document->author ?? 'N/A' }}</p>
+                        </div>
+
+                        <!-- Field -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Field</label>
+                            <p class="mt-2">
+                                <x-badge type="primary">{{ $document->field ?? 'Unspecified' }}</x-badge>
+                            </p>
+                        </div>
+
+                        <!-- Genre -->
+                        <div>
+                            <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Genre</label>
+                            <p class="mt-2 text-lg text-slate-900 dark:text-white">{{ $document->genre ?? 'N/A' }}</p>
+                        </div>
+
+                        <!-- Keywords -->
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Keywords</label>
+                            <p class="mt-2 text-slate-900 dark:text-white">{{ $document->keywords ?? 'N/A' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-slate-200 dark:border-slate-700"></div>
+
+                    <!-- Download & Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                        @if($document->file_path)
+                            <a href="{{ asset('storage/' . $document->file_path) }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg bg-success-600 hover:bg-success-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-success-500" download>
+                                <i class="fas fa-download mr-2"></i>Download File
+                            </a>
+                        @endif
+                        
+                        <x-button type="primary" onclick="window.location.href='{{ route('documents.edit', $document->id) }}'">
+                            <i class="fas fa-edit mr-2"></i>Edit Document
+                        </x-button>
+                        
+                        <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="flex-1 sm:flex-none">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-danger-600 hover:bg-danger-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-danger-500" onclick="return confirm('Are you sure you want to delete this document?')">
+                                <i class="fas fa-trash mr-2"></i>Delete Document
+                            </button>
+                        </form>
                     </div>
                 </div>
-            </div>
+            </x-card>
+
+            <!-- Sidebar Card -->
+            <x-card>
+                <div class="space-y-6">
+                    <!-- Uploaded By -->
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide block mb-3">Uploaded By</label>
+                        <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                            @if($document->user->profile && $document->user->profile->profile_picture)
+                                <img src="{{ asset('storage/' . $document->user->profile->profile_picture) }}" alt="Profile" class="w-12 h-12 rounded-full object-cover">
+                            @else
+                                <div class="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user text-primary-600 dark:text-primary-400"></i>
+                                </div>
+                            @endif
+                            <div>
+                                <p class="font-semibold text-slate-900 dark:text-white text-sm">{{ $document->user->name }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ $document->user->email }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-slate-200 dark:border-slate-700"></div>
+
+                    <!-- Created Date -->
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Created Date</label>
+                        <p class="mt-2 text-slate-900 dark:text-white">
+                            <i class="fas fa-calendar text-slate-400 mr-2"></i>{{ $document->created_at->format('M d, Y') }}
+                        </p>
+                    </div>
+
+                    <!-- Last Updated -->
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Last Updated</label>
+                        <p class="mt-2 text-slate-900 dark:text-white">
+                            <i class="fas fa-clock text-slate-400 mr-2"></i>{{ $document->updated_at->format('M d, Y H:i') }}
+                        </p>
+                    </div>
+                </div>
+            </x-card>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const stars = document.querySelectorAll('.star-rating .star');
-            const ratingInput = document.getElementById('rating-input');
+        <!-- Comments Section -->
+        @if($document->comments->count() > 0)
+            <x-card title="Comments & Ratings" class="mb-6">
+                <div class="space-y-4">
+                    @foreach($document->comments as $comment)
+                        <div class="flex gap-4 pb-4 border-b border-slate-200 dark:border-slate-700 last:border-b-0">
+                            @if($comment->user->profile && $comment->user->profile->profile_picture)
+                                <img src="{{ asset('storage/' . $comment->user->profile->profile_picture) }}" alt="Profile" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                            @else
+                                <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user text-primary-600 text-sm"></i>
+                                </div>
+                            @endif
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <p class="font-semibold text-slate-900 dark:text-white">{{ $comment->user->name }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $comment->created_at->diffForHumans() }}</p>
+                                </div>
+                                <p class="mt-1 text-slate-600 dark:text-slate-400">{{ $comment->content }}</p>
+                                @if($comment->rating)
+                                    <div class="mt-2 flex gap-1">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="text-lg {{ $i <= $comment->rating ? 'text-yellow-400' : 'text-slate-300' }}">★</span>
+                                        @endfor
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </x-card>
+        @endif
 
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    const rating = star.getAttribute('data-value');
-                    ratingInput.value = rating;
-
-                    stars.forEach(s => {
-                        s.classList.toggle('selected', s.getAttribute('data-value') <= rating);
-                    });
-                });
-            });
-        });
-    </script>
+        <!-- Back Button -->
+        <x-button type="secondary" onclick="window.location.href='{{ route('documents.index') }}'">
+            <i class="fas fa-chevron-left mr-2"></i>Back to List
+        </x-button>
+    </x-container>
 </x-app-layout>

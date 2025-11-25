@@ -1,41 +1,88 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Add Student') }}
-        </h2>
-    </x-slot>
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Add Student" description="Create a new student account">
+        </x-page-header>
 
-    <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <form action="{{ route('lecturer.users.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                            <input type="text" name="name" id="name" class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ old('name') }}" required>
-                            @error('name') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
-                        </div>
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
+            <form action="{{ route('lecturer.users.store') }}" method="POST">
+                @csrf
 
-                        <div class="mb-4">
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" id="email" class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ old('email') }}" required>
-                            @error('email') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
-                        </div>
+                <div class="space-y-6">
+                    <!-- Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Full Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name') }}"
+                            placeholder="Enter student's full name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <div class="mb-4">
-                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <input type="password" name="password" id="password" class="form-input rounded-md shadow-sm mt-1 block w-full" required>
-                            @error('password') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
-                        </div>
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-primary-600"></i>Email Address
+                        </label>
+                        <x-input 
+                            id="email"
+                            name="email"
+                            type="email"
+                            value="{{ old('email') }}"
+                            placeholder="student@example.com"
+                            required
+                        />
+                        @error('email')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <div class="flex justify-end">
-                            <a href="{{ route('lecturer.users.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary ml-4">Save</button>
-                        </div>
-                    </form>
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-primary-600"></i>Password
+                        </label>
+                        <x-input 
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter a secure password"
+                            required
+                        />
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Minimum 8 characters recommended
+                        </p>
+                        @error('password')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-save mr-2"></i>Create Student
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </form>
+        </x-card>
+    </x-container>
 </x-app-layout>

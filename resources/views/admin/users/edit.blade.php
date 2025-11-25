@@ -1,105 +1,113 @@
 <x-app-layout>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Edit User" description="{{ $user->name }}">
+        </x-page-header>
 
-        .form-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
+            <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-        .form-container label {
-            font-size: 1rem;
-            color: #333;
-            display: block;
-            margin-bottom: 5px;
-        }
+                <div class="space-y-6">
+                    <!-- Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Full Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name', $user->name) }}"
+                            placeholder="Enter user's full name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-        .form-container input,
-        .form-container select,
-        .form-container button {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-envelope mr-2 text-primary-600"></i>Email Address
+                        </label>
+                        <x-input 
+                            id="email"
+                            name="email"
+                            type="email"
+                            value="{{ old('email', $user->email) }}"
+                            placeholder="user@example.com"
+                            required
+                        />
+                        @error('email')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-        .form-container input[type="text"],
-        .form-container input[type="email"],
-        .form-container input[type="password"] {
-            background-color: #f9f9f9;
-        }
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-lock mr-2 text-primary-600"></i>Password
+                        </label>
+                        <x-input 
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Leave blank to keep current password"
+                        />
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Leave empty to keep the current password
+                        </p>
+                        @error('password')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-        .form-container select {
-            background-color: #f9f9f9;
-        }
+                    <!-- Role Field -->
+                    <div>
+                        <label for="role_id" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user-tag mr-2 text-primary-600"></i>User Role
+                        </label>
+                        <x-select 
+                            id="role_id"
+                            name="role_id"
+                            required
+                        >
+                            @foreach($roles as $role)
+                                @if(auth()->user()->role->name === 'Super Admin' || $role->name !== 'Super Admin')
+                                    <option value="{{ $role->id }}" {{ $role->id == $user->role_id ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        </x-select>
+                        @error('role_id')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-        .form-container button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-        }
-
-        .form-container button:hover {
-            background-color: #45a049;
-        }
-
-        .form-container .form-footer {
-            text-align: center;
-            margin-top: 15px;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100 form-container">
-                    <h2 class="text-2xl font-bold mb-6">Create User</h2>
-                    <form action="{{ route('admin.users.store') }}" method="POST">
-                        @csrf
-                        <div>
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div>
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div>
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" required>
-                        </div>
-                        <div>
-                            <label for="role_id">Role</label>
-                            <select id="role_id" name="role_id" required>
-                                @foreach($roles as $role)
-                                    {{-- Only show "Super Admin" to logged-in super admins --}}
-                                    @if(auth()->user()->role->name === 'Super Admin' || $role->name !== 'Super Admin')
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <button type="submit">Create</button>
-                        </div>
-                    </form>
-                    <div class="form-footer">
-                        <a href="{{ route('admin.users.index') }}" class="text-blue-500 hover:text-blue-700">Back to User List</a>
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-save mr-2"></i>Update User
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </form>
+        </x-card>
+    </x-container>
 </x-app-layout>

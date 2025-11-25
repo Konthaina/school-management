@@ -1,108 +1,193 @@
 <x-app-layout>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Upload Document" description="Add a new document to the system">
+        </x-page-header>
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn-submit {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            background-color: #218838;
-        }
-
-        .btn-cancel {
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .btn-cancel:hover {
-            background-color: #c82333;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="form-container">
-            <h2 class="text-xl font-bold mb-4">Add New Document</h2>
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
             <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="form-group">
-                    <label for="name">Document Name</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+
+                <div class="space-y-6">
+                    <!-- Document Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-file-alt mr-2 text-primary-600"></i>Document Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name') }}"
+                            placeholder="Enter document name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Publication Year Field -->
+                    <div>
+                        <label for="publication_year" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-calendar mr-2 text-primary-600"></i>Publication Year
+                        </label>
+                        <x-input 
+                            id="publication_year"
+                            name="publication_year"
+                            type="number"
+                            value="{{ old('publication_year') }}"
+                            placeholder="2024"
+                            required
+                        />
+                        @error('publication_year')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Author Field -->
+                    <div>
+                        <label for="author" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Author
+                        </label>
+                        <x-input 
+                            id="author"
+                            name="author"
+                            type="text"
+                            value="{{ old('author') }}"
+                            placeholder="Author name"
+                        />
+                        @error('author')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Field Field -->
+                    <div>
+                        <label for="field" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-tag mr-2 text-primary-600"></i>Field
+                        </label>
+                        <x-input 
+                            id="field"
+                            name="field"
+                            type="text"
+                            value="{{ old('field') }}"
+                            placeholder="e.g., Science, Technology, Mathematics"
+                        />
+                        @error('field')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Genre Field -->
+                    <div>
+                        <label for="genre" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-book mr-2 text-primary-600"></i>Genre
+                        </label>
+                        <x-input 
+                            id="genre"
+                            name="genre"
+                            type="text"
+                            value="{{ old('genre') }}"
+                            placeholder="e.g., Research Paper, Article, Book"
+                        />
+                        @error('genre')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Keywords Field -->
+                    <div>
+                        <label for="keywords" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-key mr-2 text-primary-600"></i>Keywords
+                        </label>
+                        <textarea 
+                            id="keywords"
+                            name="keywords"
+                            placeholder="Comma-separated keywords (optional)"
+                            rows="3"
+                            class="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        >{{ old('keywords') }}</textarea>
+                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Separate multiple keywords with commas
+                        </p>
+                        @error('keywords')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- User Field -->
+                    <div>
+                        <label for="user_id" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user-circle mr-2 text-primary-600"></i>Document Owner
+                        </label>
+                        <x-select 
+                            id="user_id"
+                            name="user_id"
+                            required
+                        >
+                            <option value="">Select User</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        @error('user_id')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- File Upload Field -->
+                    <div>
+                        <label for="file" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-upload mr-2 text-primary-600"></i>Upload File
+                        </label>
+                        <div class="relative">
+                            <input 
+                                id="file"
+                                name="file"
+                                type="file"
+                                class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-600 file:text-white hover:file:bg-primary-700 cursor-pointer"
+                                required
+                            />
+                        </div>
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Supported formats: PDF, DOC, DOCX, TXT, Images (Max 50MB)
+                        </p>
+                        @error('file')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-upload mr-2"></i>Upload Document
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="publication_year">Publication Year</label>
-                    <input type="number" id="publication_year" name="publication_year" value="{{ old('publication_year') }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="keywords">Keywords</label>
-                    <textarea id="keywords" name="keywords">{{ old('keywords') }}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="author">Author</label>
-                    <input type="text" id="author" name="author" value="{{ old('author') }}">
-                </div>
-                <div class="form-group">
-                    <label for="field">Field</label>
-                    <input type="text" id="field" name="field" value="{{ old('field') }}">
-                </div>
-                <div class="form-group">
-                    <label for="genre">Genre</label>
-                    <input type="text" id="genre" name="genre" value="{{ old('genre') }}">
-                </div>
-                <div class="form-group">
-                    <label for="user_id">User</label>
-                    <select id="user_id" name="user_id" required>
-                        <option value="">Select User</option>
-                        @foreach ($users as $user)
-                            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                {{ $user->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="file">Upload File</label>
-                    <input type="file" id="file" name="file" required>
-                </div>
-                <button type="submit" class="btn-submit">Save Document</button>
-                <a href="{{ route('documents.index') }}" class="btn-cancel">Cancel</a>
             </form>
-        </div>
-    </div>
+        </x-card>
+    </x-container>
 </x-app-layout>

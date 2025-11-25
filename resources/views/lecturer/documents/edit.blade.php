@@ -1,76 +1,169 @@
 <x-app-layout>
-    <style>
-        /* Reusing styles from create.blade.php */
-        .input-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+    <x-container class="py-8">
+        <!-- Page Header -->
+        <x-page-header title="Edit Document" description="{{ $document->name }}">
+        </x-page-header>
 
-        .input-field {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
+        <!-- Form Card -->
+        <x-card class="max-w-2xl">
+            <form action="{{ route('lecturer.documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-        .submit-button {
-            background-color: #000;
-            color: #fff;
-            border: 1px solid #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-        }
+                <div class="space-y-6">
+                    <!-- Document Name Field -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-file-alt mr-2 text-primary-600"></i>Document Name
+                        </label>
+                        <x-input 
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name', $document->name) }}"
+                            placeholder="Enter document name"
+                            required
+                        />
+                        @error('name')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-        .submit-button:hover {
-            opacity: 0.9;
-        }
-    </style>
+                    <!-- Publication Year Field -->
+                    <div>
+                        <label for="publication_year" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-calendar mr-2 text-primary-600"></i>Publication Year
+                        </label>
+                        <x-input 
+                            id="publication_year"
+                            name="publication_year"
+                            type="number"
+                            value="{{ old('publication_year', $document->publication_year) }}"
+                            placeholder="2024"
+                            required
+                        />
+                        @error('publication_year')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-2xl font-bold mb-6">Edit Document</h2>
+                    <!-- Author Field -->
+                    <div>
+                        <label for="author" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-user mr-2 text-primary-600"></i>Author
+                        </label>
+                        <x-input 
+                            id="author"
+                            name="author"
+                            type="text"
+                            value="{{ old('author', $document->author) }}"
+                            placeholder="Author name"
+                        />
+                        @error('author')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                    <form action="{{ route('lecturer.documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
+                    <!-- Field Field -->
+                    <div>
+                        <label for="field" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-tag mr-2 text-primary-600"></i>Field
+                        </label>
+                        <x-input 
+                            id="field"
+                            name="field"
+                            type="text"
+                            value="{{ old('field', $document->field) }}"
+                            placeholder="e.g., Science, Technology, Mathematics"
+                        />
+                        @error('field')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <label for="name" class="input-label">Document Name</label>
-                        <input type="text" id="name" name="name" class="input-field" value="{{ $document->name }}" required>
+                    <!-- Genre Field -->
+                    <div>
+                        <label for="genre" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-book mr-2 text-primary-600"></i>Genre
+                        </label>
+                        <x-input 
+                            id="genre"
+                            name="genre"
+                            type="text"
+                            value="{{ old('genre', $document->genre) }}"
+                            placeholder="e.g., Research Paper, Article, Book"
+                        />
+                        @error('genre')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <label for="publication_year" class="input-label">Publication Year</label>
-                        <input type="number" id="publication_year" name="publication_year" class="input-field" value="{{ $document->publication_year }}" required>
+                    <!-- Keywords Field -->
+                    <div>
+                        <label for="keywords" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-key mr-2 text-primary-600"></i>Keywords
+                        </label>
+                        <x-input 
+                            id="keywords"
+                            name="keywords"
+                            type="text"
+                            value="{{ old('keywords', $document->keywords) }}"
+                            placeholder="Comma-separated keywords (optional)"
+                        />
+                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Separate multiple keywords with commas
+                        </p>
+                        @error('keywords')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <label for="keywords" class="input-label">Keywords</label>
-                        <input type="text" id="keywords" name="keywords" class="input-field" value="{{ $document->keywords }}">
+                    <!-- File Upload Field -->
+                    <div>
+                        <label for="file" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fas fa-upload mr-2 text-primary-600"></i>Replace File (Optional)
+                        </label>
+                        <div class="relative">
+                            <input 
+                                id="file"
+                                name="file"
+                                type="file"
+                                class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-600 file:text-white hover:file:bg-primary-700 cursor-pointer"
+                            />
+                        </div>
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            <i class="fas fa-info-circle mr-1"></i>Leave empty to keep the current file. Max 50MB
+                        </p>
+                        @error('file')
+                            <p class="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        <label for="file" class="input-label">Replace File (Optional)</label>
-                        <input type="file" id="file" name="file" class="input-field">
-
-                        <label for="author" class="input-label">Author</label>
-                        <input type="text" id="author" name="author" class="input-field" value="{{ $document->author }}">
-
-                        <label for="field" class="input-label">Field</label>
-                        <input type="text" id="field" name="field" class="input-field" value="{{ $document->field }}">
-
-                        <label for="genre" class="input-label">Genre</label>
-                        <input type="text" id="genre" name="genre" class="input-field" value="{{ $document->genre }}">
-                        <a href="{{ route('lecturer.documents.index') }}"
-   style="background-color: #000; color: #fff; border: 1px solid #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; display: inline-block; margin-bottom: 16px;">
-    Back
-</a>
-
-                        <button type="submit" class="submit-button">Update</button>
-                    </form>
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <x-button type="primary">
+                            <i class="fas fa-save mr-2"></i>Update Document
+                        </x-button>
+                        <x-button type="secondary" onclick="window.history.back()">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </x-button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </form>
+        </x-card>
+    </x-container>
 </x-app-layout>

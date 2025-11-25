@@ -1,72 +1,68 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<style>
-    .bg-custom-active {
-        background-color: #1f2937; /* New background color for the active menu */
-    }
-
-    .sidebar {
-        height: 90vh; /* Set the height to 90% of the viewport */
-        overflow-y: auto; /* Allow vertical scrolling if content exceeds 90vh */
-    }
-</style>
-
-<div class="bg-gray-900 text-gray-200 sidebar w-64">
+<div class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 w-full h-full flex flex-col">
     <!-- Navigation Menu -->
-    <nav class="mt-0">
-        <ul class="space-y-4 px-6 pt-4">
+    <nav class="flex-1 overflow-y-auto">
+        <ul class="space-y-2 px-4 py-6">
             <!-- Dashboard -->
             <li>
                 <a href="{{ route('super_admin.dashboard') }}"
-                   class="flex items-center {{ request()->routeIs('dashboard') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-tachometer-alt h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Dashboard</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('dashboard', 'super_admin.dashboard') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
             <!-- Manage Document -->
             <li>
                 <a href="{{ route('documents.index') }}"
-                   class="flex items-center {{ request()->routeIs('manage.document') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-folder h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Manage Document</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('documents.*') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-file-pdf w-5"></i>
+                    <span>Documents</span>
                 </a>
             </li>
 
             <!-- Manage Users -->
             <li>
                 <a href="{{ route('users.index') }}"
-                   class="flex items-center {{ request()->routeIs('users.index') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-users h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Manage Users</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('users.*') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Users</span>
                 </a>
             </li>
 
             <!-- Manage Comments -->
             <li>
                 <a href="{{ route('comments.index') }}"
-                   class="flex items-center {{ request()->routeIs('manage.comments') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-comments h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Manage Comments</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('comments.*') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Comments</span>
                 </a>
             </li>
 
             <!-- Manage Profiles -->
             <li>
                 <a href="{{ route('profiles.index') }}"
-                   class="flex items-center {{ request()->routeIs('manage.profiles') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-user-circle h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Manage Profiles</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('profiles.*') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-user-circle w-5"></i>
+                    <span>Profiles</span>
                 </a>
             </li>
 
             <!-- Settings -->
             <li>
                 <a href="{{ route('settings.index') }}"
-                   class="flex items-center {{ request()->routeIs('settings') ? 'bg-custom-active text-white' : 'text-blue-500' }} hover:bg-gray-700 px-4 py-3 rounded-lg transition">
-                    <i class="fas fa-cogs h-6 w-6 mr-3"></i>
-                    <span class="font-medium">Settings</span>
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 {{ request()->routeIs('settings.*') ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700' }}">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Settings</span>
                 </a>
             </li>
         </ul>
     </nav>
+
+    <!-- Footer Info -->
+    <div class="border-t border-slate-200 dark:border-slate-700 px-4 py-4">
+        <div class="text-xs text-slate-600 dark:text-slate-400 text-center">
+            <p class="font-semibold">School Management</p>
+            <p>v1.0.0</p>
+        </div>
+    </div>
 </div>

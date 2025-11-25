@@ -1,4 +1,4 @@
-import 'bootstrap';
+// Bootstrap has been removed in favor of Tailwind CSS v3
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
